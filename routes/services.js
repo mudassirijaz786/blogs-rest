@@ -8,12 +8,12 @@ router.get("/", async (req, res) => {
   try {
     const service = await Service.find();
     if (!service) {
-      res.status(404).json({ notFound: "no service in database" });
+      res.status(404).json({ message: "no service in database" });
     } else {
       res.json({ data: service });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -23,10 +23,44 @@ router.get("/:id", async (req, res) => {
     if (service) {
       res.json({ data: service });
     } else {
-      res.status(404).json({ notFound: "service not found" });
+      res.status(404).json({ message: "service not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.get("/search/:query", async (req, res) => {
+  const query = req.params.query.toLowerCase();
+  const services = await Service.find();
+  var foundServices = [];
+  services.forEach((service) => {
+    if (
+      service.name.toLowerCase().includes(query) ||
+      service.description.toLowerCase().includes(query)
+    ) {
+      foundServices.push(service);
+    }
+  });
+  if (foundServices.length > 0) {
+    res.json({ data: foundServices });
+  } else {
+    res.status(400).json({
+      message: "Could not found any service regarding your search ...",
+    });
+  }
+});
+
+router.get("/byName/:name", async (req, res) => {
+  try {
+    const services = await Service.find({ name: req.params.name });
+    if (!services) {
+      res.status(400).json({ message: "No Service found!" });
+    } else {
+      res.json({ data: services });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error.." });
   }
 });
 
@@ -38,7 +72,7 @@ router.post("/", admin, async (req, res) => {
     await service.save();
     res.json({ message: "service has been saved successfully", data: service });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -47,7 +81,7 @@ router.put("/:id", admin, async (req, res) => {
     let found = await Service.findById({ _id: req.params.id });
     if (!found) {
       return res.status(404).json({
-        error: "No service in the system",
+        message: "No service in the system",
       });
     } else {
       const service = await Service.findByIdAndUpdate(
@@ -61,7 +95,7 @@ router.put("/:id", admin, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -69,12 +103,12 @@ router.delete("/:id", admin, async (req, res) => {
   try {
     const service = await Service.findByIdAndRemove(req.params.id);
     if (!service) {
-      res.status(404).json({ notFound: "No service found" });
+      res.status(404).json({ message: "No service found" });
     } else {
       res.json({ message: "service has been deleted successfully" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

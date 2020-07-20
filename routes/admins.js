@@ -15,7 +15,7 @@ router.get("/", admin, async (req, res) => {
       res.status(404).json({ message: "Not Found!" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -30,7 +30,7 @@ router.get("/me/:id", admin, async (req, res) => {
         .json({ message: "Admin with given Id is not found in system!" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
     let admin = await Admin.findOne({ email: req.body.email });
     if (!admin)
-      return res.status(400).json({ error: "Invalid email or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     const validPassword = await bcrypt.compare(
       req.body.password,
       admin.password
@@ -73,7 +73,7 @@ router.post("/register", async (req, res) => {
       res.header("x-auth-token", token).json({ token });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
