@@ -10,6 +10,11 @@ const router = express.Router();
 const Joi = require("joi");
 const sendEmailForResetPassword = require("../utils/emailService");
 
+router.get("/", auth, async (req, res) => {
+  const customers = await Customer.find().select("-password");
+  res.json({ data: customers });
+});
+
 router.get("/me/:id", auth, async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id).select(

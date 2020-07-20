@@ -7,7 +7,9 @@ const { ContactUs } = require("../models/contactUs");
 const _ = require("lodash");
 
 router.post("/", async (req, res) => {
-  const contactUs = new ContactUs(_.pick(["fullNmae", "message", "email"]));
+  const contactUs = new ContactUs(
+    _.pick(req.body, ["fullName", "message", "email"])
+  );
   await contactUs.save();
   res.json({ message: "Your message has been sent." });
 });
