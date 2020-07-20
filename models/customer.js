@@ -5,9 +5,27 @@ const mongoose = require("mongoose");
 
 // customer schema
 const customerSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
     required: true,
+    minlength: 2,
+    maxlength: 50,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 50,
+  },
+  gender: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 50,
+  },
+  address: {
+    type: String,
+    required: false,
     minlength: 2,
     maxlength: 50,
   },
@@ -17,7 +35,7 @@ const customerSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 255,
   },
-  phoneNumber: {
+  mobileNumber: {
     type: String,
     required: true,
   },
@@ -39,7 +57,6 @@ customerSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
     {
       _id: this._id,
-      name: this.name,
       email: this.email,
     },
     config.get("jwtPrivateKey")
@@ -53,10 +70,13 @@ const Customer = mongoose.model("Customer", customerSchema);
 validateCustomer = (customer) => {
   const phoneReg = /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
   const schema = {
-    name: Joi.string().min(2).max(50).required(),
+    firstName: Joi.string().min(2).max(50).required(),
+    lastName: Joi.string().min(2).max(50).required(),
+    gender: Joi.string().min(2).max(50).required(),
+    address: Joi.string().min(2).max(50),
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().alphanum().min(8).max(32).required(),
-    phoneNumber: Joi.string()
+    mobileNumber: Joi.string()
       .regex(RegExp(phoneReg))
       .required()
       .options({

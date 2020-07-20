@@ -58,7 +58,15 @@ router.post("/register", async (req, res) => {
         error: `Customer with email ${req.body.email} is already registered`,
       });
     customer = new Customer(
-      _.pick(req.body, ["name", "email", "password", "phoneNumber"])
+      _.pick(req.body, [
+        "firstName",
+        "lastName",
+        "gender",
+        "address",
+        "email",
+        "password",
+        "mobileNumber",
+      ])
     );
     const salt = await bcrypt.genSalt(10);
     customer.password = await bcrypt.hash(customer.password, salt);
