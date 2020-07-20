@@ -9,7 +9,6 @@ require("./startup/routes")(app);
 require("./startup/db")();
 require("./startup/config")();
 require("./startup/validation")();
-require("./startup/swaggerDocs")(app);
 
 const port = process.env.PORT || config.get("port");
 const server = app.listen(port, () =>
