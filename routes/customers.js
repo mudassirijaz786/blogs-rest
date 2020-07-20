@@ -1,8 +1,6 @@
 const auth = require("../middleware/auth");
 const bcrypt = require("bcryptjs");
 const admin = require("../middleware/admin");
-const jwt = require("jsonwebtoken");
-const config = require("config");
 const _ = require("lodash");
 const express = require("express");
 const { Customer, validate } = require("../models/customer");
@@ -47,8 +45,8 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    // const { error } = validate(req.body);
-    // if (error) return res.status(400).send(error.details[0].message);
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
     let customer = await Customer.findOne({ email: req.body.email });
     if (customer)
       return res.status(401).json({
@@ -60,17 +58,16 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     customer.password = await bcrypt.hash(customer.password, salt);
     await customer.save();
-
     const token = customer.generateAuthToken();
     res
       .header("x-auth-token", token)
-      .send(_.pick(customer, ["_id", "name", "email", "phoneNumber"]));
+      .json({ message: "Registered successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.post("/resetPassword/newPassword", async (req, res) => {
+router.post("/resetPassword", async (req, res) => {
   try {
     const customerId = await Customer.findById(req.body._id);
     if (!customerId) {
@@ -103,7 +100,7 @@ router.post("/resetPassword/sendEmail", async (req, res) => {
     const customer = await Customer.findOne({ email });
     if (!customer) {
       res.status(404).json({
-        message: `Customer with an id ${req.body.email} not found in system`,
+        message: `Customer with ${req.body.email} not found in system`,
       });
     } else {
       sendEmailForResetPassword(
