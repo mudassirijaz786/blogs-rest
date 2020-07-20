@@ -199,7 +199,7 @@ router.post("/customerBlocking/:id", admin, async (req, res) => {
   }
 });
 
-// function to validate login params
+// function to validate login
 validateLogin = (req) => {
   const schema = {
     email: Joi.string().min(5).max(255).required().email(),

@@ -1,11 +1,24 @@
 const config = require("config");
+const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
-  // 401 Unauthorized
-  // 403 Forbidden
   if (!config.get("requiresAuth")) return next();
 
-  if (!req.user.isAdmin)
-    return res.status(403).send("Access denied. You're not an admin");
-  next();
+  const token = req.header("x-auth-token");
+  if (!token)
+    return res.status(401).json({
+      message: "Access denied, no token provided. Please provide auth token.",
+    });
+
+  try {
+    const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+    req.user = decoded;
+    if (!req.user.isAdmin) {
+      res.status(403).json({ message: "You are not an admin" });
+    } else {
+      next();
+    }
+  } catch (ex) {
+    res.status(400).json({ error: "Invalid token." });
+  }
 };
