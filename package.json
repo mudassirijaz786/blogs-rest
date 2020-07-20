@@ -1,7 +1,7 @@
 {
-  "name": "elys",
+  "name": "unnic",
   "version": "1.0.0",
-  "description": "elys job portal",
+  "description": "unnic",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -6,7 +6,6 @@ const config = require("config");
 const _ = require("lodash");
 const express = require("express");
 const { Customer, validate } = require("../models/customer");
-const { Profile } = require("../models/profile");
 const router = express.Router();
 const Joi = require("joi");
 const sendEmailForResetPassword = require("../utils/emailService");
