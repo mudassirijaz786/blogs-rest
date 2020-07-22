@@ -11,6 +11,5 @@ module.exports = (app) => {
   app.use("/api/contactUs", contactUs);
   app.use("/api/admin", admin);
   app.use("/api/service", service);
-
   app.use(error);
 };
