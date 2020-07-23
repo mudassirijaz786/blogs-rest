@@ -13,8 +13,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   //   true => message has been read by admin
   //   false => message has unread status
+
   messageStatus: {
     type: Boolean,
     required: true,
@@ -24,5 +26,16 @@ const schema = new mongoose.Schema({
 
 const ContactUs = mongoose.model("ContactUs", schema);
 
+validateContactUs = (contactUs) => {
+  const schema = {
+    fullName: Joi.string().max(255).required(),
+    email: Joi.ObjectId().required().email(),
+    message: Joi.string().required(),
+  };
+  return Joi.validate(contactUs, schema);
+};
+
 exports.ContactUs = ContactUs;
+exports.validate = validateContactUs;
+
 // (full name, email, message)

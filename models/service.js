@@ -11,6 +11,16 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+    required: true,
+  },
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
+
   //  more fields will be added soon
 });
 
@@ -19,8 +29,10 @@ const Service = mongoose.model("Service", serviceSchema);
 
 validateService = (service) => {
   const schema = {
-    name: Joi.string().min(2).max(50).required(),
-    description: Joi.string().min(10).max(255).required(),
+    name: Joi.string().max(50).required(),
+    description: Joi.string().max(255).required(),
+    image: Joi.string().required(),
+    category_id: Joi.ObjectId().required(),
   };
   return Joi.validate(service, schema);
 };
