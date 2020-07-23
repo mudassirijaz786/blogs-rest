@@ -2,10 +2,11 @@
   "jwtPrivateKey": "myJWTKey",
   "db": "mongodb://unnic:unnic123!@ds351987.mlab.com:51987/unnic",
   "port": "3900",
-  "requiresAuth": true,
+  "requiresAuth": false,
   "frontEndURL": "www.google.com.pk",
   "email": "tradebabapk@gmail.com",
   "emailPassword": "Pakistan888",
+  "stripe_key": "",
   "aws": {
     "accessKeyId": "AKIAJMIPBAVVXRVB4AWA",
     "secretAccessKey": "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",

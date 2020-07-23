@@ -28,7 +28,7 @@ validateCompanyService = (companyService) => {
   const schema = {
     price: Joi.string().max(255).required(),
     category_id: Joi.ObjectId().required(),
-    service_id: Joi.ObjectId().required(),
+    company_id: Joi.ObjectId().required(),
   };
   return Joi.validate(companyService, schema);
 };
