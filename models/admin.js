@@ -4,6 +4,7 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 
 // admin schema
+
 const adminSchema = new mongoose.Schema({
   name: {
     type: String,
