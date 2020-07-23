@@ -6,6 +6,8 @@
   "frontEndURL": "www.google.com.pk",
   "email": "tradebabapk@gmail.com",
   "emailPassword": "Pakistan888",
+  "azure_api_key": "rFmmOilpQzDOaIDYoAXzFGWCqI6Qtm5GbU8pqZy/9nwnBuCPD5352CzAvRAvfbqlAp9Qi6iPGdAoZbPPHja4ag==",
+  "azure_connection_string": "DefaultEndpointsProtocol=https;AccountName=tradebaba;AccountKey=rFmmOilpQzDOaIDYoAXzFGWCqI6Qtm5GbU8pqZy/9nwnBuCPD5352CzAvRAvfbqlAp9Qi6iPGdAoZbPPHja4ag==;EndpointSuffix=core.windows.net",
   "stripe_key": "",
   "aws": {
     "accessKeyId": "AKIAJMIPBAVVXRVB4AWA",
