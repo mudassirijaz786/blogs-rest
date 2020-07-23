@@ -3,77 +3,66 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
-// customer schema
-const customerSchema = new mongoose.Schema({
+// serviceProvider schema
+const serviceProviderSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 50,
   },
   lastName: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 50,
   },
   gender: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 50,
   },
   address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
     required: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
-    minlength: 5,
-    maxlength: 255,
   },
   mobileNumber: {
     type: String,
     required: true,
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 1024,
-  },
-  blocked: {
-    type: Boolean,
-    // required: true,
-    default: false,
-  },
 });
 
-// token generation
-customerSchema.methods.generateAuthToken = function () {
+// token generation for service provider
+serviceProviderSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
     {
       _id: this._id,
       email: this.email,
+      isServiceProvider: true,
     },
     config.get("jwtPrivateKey")
   );
   return token;
 };
 
-// Customer model
-const Customer = mongoose.model("Customer", customerSchema);
+// serviceProvider model
+const ServiceProvider = mongoose.model(
+  "ServiceProvider",
+  serviceProviderSchema
+);
 
-validateCustomer = (customer) => {
+validateServiceProvider = (serviceProvider) => {
   const phoneReg = /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
   const schema = {
-    firstName: Joi.string().min(2).max(50).required(),
-    lastName: Joi.string().min(2).max(50).required(),
-    gender: Joi.string().min(2).max(50).required(),
+    firstName: Joi.string().max(50).required(),
+    lastName: Joi.string().max(50).required(),
     address_id: Joi.ObjectId().required(),
-    email: Joi.string().min(5).max(255).required().email(),
+    gender: Joi.string().required(),
+    email: Joi.string().max(255).required().email(),
     password: Joi.string().alphanum().min(8).max(32).required(),
     mobileNumber: Joi.string()
       .regex(RegExp(phoneReg))
@@ -88,9 +77,8 @@ validateCustomer = (customer) => {
         },
       }),
   };
-
-  return Joi.validate(customer, schema);
+  return Joi.validate(serviceProvider, schema);
 };
 
-exports.Customer = Customer;
-exports.validate = validateCustomer;
+exports.ServiceProvider = ServiceProvider;
+exports.validate = validateServiceProvider;
