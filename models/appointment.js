@@ -49,6 +49,7 @@ const schema = new mongoose.Schema({
       "Completed",
     ],
     required: true,
+    default: "Pending",
   },
 });
 
