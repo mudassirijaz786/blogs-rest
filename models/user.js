@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024,
   },
-  type: {
+  role: {
     type: String,
     enum: ["ServiceProvider", "Employee", "ServiceSeeker"],
     required: true,
