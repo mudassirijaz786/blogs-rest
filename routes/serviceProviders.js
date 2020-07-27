@@ -42,7 +42,12 @@ router.post("/register", auth, async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    else {
+    let serviceProvider = await Admin.findOne({ email: req.body.email });
+    if (serviceProvider) {
+      res.status(409).json({
+        message: `ServiceProvider with an email ${req.body.email} is already registered`,
+      });
+    } else {
       const serviceProvider = new ServiceProvider(
         _.pick(req.body, [
           "firstName",
@@ -55,12 +60,13 @@ router.post("/register", auth, async (req, res) => {
         ])
       );
       await serviceProvider.save();
-      res.json({ message: "Service Provider  saved successfully" });
+      res.json({ message: "Service provider registered successfully" });
     }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
   }
 });
+
 router.put("/:id", validateObjectId, auth, async (req, res) => {
   try {
     const serviceProvider = await ServiceProvider.findById(req.params.id);
