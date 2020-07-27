@@ -22,6 +22,11 @@ const schema = new mongoose.Schema({
     ref: "Expert",
     required: true,
   },
+  review: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   service_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Service",
