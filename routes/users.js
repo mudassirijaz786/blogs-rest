@@ -1,19 +1,23 @@
-const auth = require("../middleware/auth");
-const bcrypt = require("bcryptjs");
-const admin = require("../middleware/admin");
-const _ = require("lodash");
 const express = require("express");
-const { User, validate } = require("../models/user.js");
-const router = express.Router();
+const bcrypt = require("bcryptjs");
+const _ = require("lodash");
 const Joi = require("joi");
+const router = express.Router();
+
+const { User, validate } = require("../models/user.js");
+
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
 const sendEmailForResetPassword = require("../utils/emailService");
+const validateObjectId = require("../middleware/validateObjectId");
 
 router.get("/", auth, async (req, res) => {
   const users = await User.find().select("-password");
   res.json({ data: users });
 });
 
-router.get("/me/:id", auth, async (req, res) => {
+router.get("/me/:id", validateObjectId, auth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password ");
     if (user) {
@@ -79,9 +83,9 @@ router.post("/register", async (req, res) => {
   //   }
 });
 
-router.post("/resetPassword", async (req, res) => {
+router.post("/resetPassword/:id", validateObjectId, async (req, res) => {
   try {
-    const userId = await User.findById(req.body._id);
+    const userId = await User.findById(req.params.id);
     if (!userId) {
       res.status(404).json({
         message: `User not found in system`,
@@ -128,7 +132,7 @@ router.post("/resetPassword/sendEmail", async (req, res) => {
   }
 });
 
-router.delete("/userRemove/:id", admin, async (req, res) => {
+router.delete("/userRemove/:id", validateObjectId, admin, async (req, res) => {
   try {
     const user = await User.findByIdAndRemove(req.params.id);
     if (!user) {
@@ -141,7 +145,7 @@ router.delete("/userRemove/:id", admin, async (req, res) => {
   }
 });
 
-router.get("/searchUser/:id", admin, async (req, res) => {
+router.get("/searchUser/:id", validateObjectId, admin, async (req, res) => {
   try {
     const users = await User.find();
     const query = req.params.id.toLowerCase();
@@ -157,7 +161,7 @@ router.get("/searchUser/:id", admin, async (req, res) => {
   }
 });
 
-router.put("/userUpdate/:id", auth, async (req, res) => {
+router.put("/userUpdate/:id", validateObjectId, auth, async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -180,7 +184,7 @@ router.put("/userUpdate/:id", auth, async (req, res) => {
   }
 });
 
-router.post("/userBlocking/:id", admin, async (req, res) => {
+router.post("/userBlocking/:id", validateObjectId, admin, async (req, res) => {
   try {
     const user = await User.findById({ _id: req.params.id });
     if (!user) {
