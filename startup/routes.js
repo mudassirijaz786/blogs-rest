@@ -8,6 +8,8 @@ const address = require("../routes/addresses");
 const company = require("../routes/companies");
 const companyService = require("../routes/companyServices");
 const category = require("../routes/categories");
+const tacs = require("../routes/tacs.js");
+const faqs = require("../routes/faqs.js");
 
 const error = require("../middleware/error");
 
@@ -22,6 +24,8 @@ module.exports = (app) => {
   app.use("/api/companyService", companyService);
   app.use("/api/category", category);
   app.use("/api/serviceProvider", serviceProvider);
+  app.use("/api/tacs", tacs);
+  app.use("/api/faqs", faqs);
 
   app.use(error);
 };
