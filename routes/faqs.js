@@ -1,6 +1,6 @@
 const admin = require("../middleware/admin");
 const _ = require("lodash");
-const { FAQs, validate } = require("../models/faqs");
+const { FAQs, validate } = require("../models/faq.js");
 const express = require("express");
 const router = express.Router();
 
