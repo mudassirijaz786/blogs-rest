@@ -13,8 +13,8 @@ module.exports = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
     req.user = decoded;
-    if (!req.user.role === "service_provider") {
-      res.status(403).json({ message: "You are not a service provider" });
+    if (!req.user.role === "service_seeker") {
+      res.status(403).json({ message: "You are not a service service_seeker" });
     } else {
       next();
     }
