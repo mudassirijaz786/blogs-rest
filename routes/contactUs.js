@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const admin = require("../middleware/admin");
-const { ContactUs } = require("../models/contactUs");
+const { ContactUs, validate } = require("../models/contactUs");
 const _ = require("lodash");
 
 router.post("/", async (req, res) => {

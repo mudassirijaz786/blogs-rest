@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const schema = new mongoose.Schema({
   fullName: {
@@ -29,7 +30,7 @@ const ContactUs = mongoose.model("ContactUs", schema);
 validateContactUs = (contactUs) => {
   const schema = {
     fullName: Joi.string().max(255).required(),
-    email: Joi.ObjectId().required().email(),
+    email: Joi.string().required().email(),
     message: Joi.string().required(),
   };
   return Joi.validate(contactUs, schema);
