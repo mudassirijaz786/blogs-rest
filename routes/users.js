@@ -132,7 +132,8 @@ router.post("/resetPassword/sendEmail", async (req, res) => {
   }
 });
 
-router.delete("/userRemove/:id", validateObjectId, admin, async (req, res) => {
+// below are extra ... ignore for now but don't delete or remove
+router.delete("/userRemove/:id", admin, async (req, res) => {
   try {
     const user = await User.findByIdAndRemove(req.params.id);
     if (!user) {

@@ -7,14 +7,15 @@ const stripe = require("stripe")(stripe_key);
 const cors = require("cors");
 const uuid = require("uuid/v4");
 const router = require("express").Router();
+const { Payment } = require("../models/payment");
+const { Invoice } = require("../models/invoice");
 
 router.post("/postCharge", async (req, res) => {
   let error;
-
   let status;
   let charge;
   try {
-    const { product, token } = req.body;
+    const { service, token } = req.body;
 
     const customer = await stripe.customers.create({
       email: token.email,
@@ -28,7 +29,7 @@ router.post("/postCharge", async (req, res) => {
         currency: "pkr",
         customer: customer.id,
         receipt_email: token.email,
-        description: `Purchased the ${product.name}`,
+        description: `Purchased the ${service.name}`,
         shipping: {
           name: token.card.name,
           address: {
@@ -50,7 +51,19 @@ router.post("/postCharge", async (req, res) => {
     console.error("Error:", error);
     status = "failure";
   }
-
+  const payment = new Payment({ error, status, charge });
+  payment.save();
+  if (!error) {
+    // :FIXME: Need to be tested accurately...
+    const invoice = new Invoice({
+      url: "some URL",
+      email: token.email,
+      description: charge.description,
+      charge: token.amount,
+      service_id: service._id,
+    });
+    await invoice.save();
+  }
   res.json({ error, status, charge });
 });
 

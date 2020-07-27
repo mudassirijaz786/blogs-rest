@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
   timeSlot: {
-    required: true,
     from: {
       type: Date,
       required: true,
@@ -26,6 +25,11 @@ const schema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false,
+  },
+  created_at: {
+    type: String,
+    required: true,
+    default: new Date(),
   },
   service_id: {
     type: mongoose.Schema.Types.ObjectId,

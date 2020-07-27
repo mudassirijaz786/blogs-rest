@@ -7,17 +7,21 @@ const serviceProvider = require("../routes/serviceProviders");
 const address = require("../routes/addresses");
 const company = require("../routes/companies");
 const companyService = require("../routes/companyServices");
+const appointment = require("../routes/appointments");
 const category = require("../routes/categories");
+const notification = require("../routes/notifications");
 const tacs = require("../routes/tacs.js");
 const faqs = require("../routes/faqs.js");
 const users = require("../routes/users.js");
 
 const error = require("../middleware/error");
+// const { Appointment } = require("../models/appointment");
 
 module.exports = (app) => {
   app.use(express.json());
   app.use("/api/customer", customers);
   app.use("/api/contactUs", contactUs);
+  app.use("/api/appointment", appointment);
   app.use("/api/admin", admin);
   app.use("/api/service", service);
   app.use("/api/company", company);
@@ -25,6 +29,7 @@ module.exports = (app) => {
   app.use("/api/companyService", companyService);
   app.use("/api/category", category);
   app.use("/api/serviceProvider", serviceProvider);
+  app.use("/notifications", notification);
   app.use("/api/tacs", tacs);
   app.use("/api/faqs", faqs);
   app.use("/api/users", users);
