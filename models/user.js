@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["ServiceProvider", "Employee", "ServiceSeeker"],
+    enum: ["service_provider", "service_seeker"],
     required: true,
   },
   blocked: {
@@ -77,6 +77,7 @@ validateUser = (user) => {
     firstName: Joi.string().min(2).max(50).required(),
     lastName: Joi.string().min(2).max(50).required(),
     gender: Joi.string().min(2).max(50).required(),
+    role: Joi.string().required(),
     address: Joi.string().required(),
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().alphanum().min(8).max(32).required(),
