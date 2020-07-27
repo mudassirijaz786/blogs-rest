@@ -1,6 +1,6 @@
 const admin = require("../middleware/admin");
 const _ = require("lodash");
-const { TAC, validate } = require("../models/termsAndConditions");
+const { TAC, validate } = require("../models/tac.js");
 const express = require("express");
 const router = express.Router();
 
