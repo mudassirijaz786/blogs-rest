@@ -6,11 +6,21 @@ const schema = new mongoose.Schema({
     ref: "Expert",
     required: true,
   },
+  totalServicesDone: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  rating: {
+    type: String,
+    required: true,
+    default: "5.0",
+  },
   detail: {
     type: String,
     required: true,
   },
-  services: [ 
+  services: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",
