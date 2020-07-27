@@ -61,7 +61,7 @@ userSchema.methods.generateAuthToken = function () {
     {
       _id: this._id,
       email: this.email,
-      type: this.type,
+      role: this.role,
     },
     config.get("jwtPrivateKey")
   );
