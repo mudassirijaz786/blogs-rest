@@ -10,6 +10,7 @@ const companyService = require("../routes/companyServices");
 const category = require("../routes/categories");
 const tacs = require("../routes/tacs.js");
 const faqs = require("../routes/faqs.js");
+const users = require("../routes/users.js");
 
 const error = require("../middleware/error");
 
@@ -26,6 +27,7 @@ module.exports = (app) => {
   app.use("/api/serviceProvider", serviceProvider);
   app.use("/api/tacs", tacs);
   app.use("/api/faqs", faqs);
+  app.use("/api/users", users);
 
   app.use(error);
 };
