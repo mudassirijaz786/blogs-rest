@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const _ = require("lodash");
-
+const { upload } = require("../utils/azureFileService");
 const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 
@@ -32,13 +32,15 @@ router.get("/", auth, async (req, res) => {
 });
 
 // :TODO: image path to be addedd.....
-router.post("/", auth, async (req, res) => {
+router.post("/", [upload.any(), auth], async (req, res) => {
   try {
+    req.body.imageUrl = req.files[0].url;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     else {
-      const category = new Category(_.pick(req.body, ["name"]));
+      const category = new Category(_.pick(req.body, ["name", "imageUrl"]));
       await category.save();
+      console.log(category);
       res.json({ message: "Category saved successfully" });
     }
   } catch (error) {

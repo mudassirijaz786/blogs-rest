@@ -7,9 +7,9 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: {
+  imageUrl: {
     type: String,
-    required: false,
+    required: true,
   },
   // more fields will be added soon
 });
@@ -17,10 +17,10 @@ const categorySchema = new mongoose.Schema({
 // category model
 const Category = mongoose.model("Category", categorySchema);
 
-// :FIXME: image path need to be added...
 validateCategory = (category) => {
   const schema = {
     name: Joi.string().max(50).required(),
+    imageUrl: Joi.string().required(),
   };
   return Joi.validate(category, schema);
 };

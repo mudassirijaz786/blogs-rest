@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const service = await Service.find();
+    const service = await Service.find().populate("category").exec();
     if (!service) {
       res.status(404).json({ message: "no service in database" });
     } else {
@@ -22,7 +22,9 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const service = await Service.findById(req.params.id);
+    const service = await Service.findById(req.params.id)
+      .populate("category")
+      .exec();
     if (service) {
       res.json({ data: service });
     } else {
@@ -35,7 +37,7 @@ router.get("/:id", async (req, res) => {
 
 router.get("/search/:query", async (req, res) => {
   const query = req.params.query.toLowerCase();
-  const services = await Service.find();
+  const services = await Service.find().populate("category").exec();
   var foundServices = [];
   services.forEach((service) => {
     if (
@@ -56,7 +58,9 @@ router.get("/search/:query", async (req, res) => {
 
 router.get("/byName/:name", async (req, res) => {
   try {
-    const services = await Service.find({ name: req.params.name });
+    const services = await Service.find({ name: req.params.name })
+      .populate("category")
+      .exec();
     if (!services) {
       res.status(400).json({ message: "No Service found!" });
     } else {
@@ -67,17 +71,21 @@ router.get("/byName/:name", async (req, res) => {
   }
 });
 
-router.post("/", [upload.any(), admin], async (req, res) => {
+router.post("/", upload.any(), async (req, res) => {
   try {
-    req.body.image = req.files[0].url;
+    req.body.imageUrl = req.files[0].url;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     let service = new Service(
-      _.pick(req.body, ["name", "description", "category_id"])
+      _.pick(req.body, ["name", "description", "category", "imageUrl"])
     );
-    service.imageUrl = req.files[0].url;
+
     await service.save();
-    res.json({ message: "service has been saved successfully", data: service });
+    await service.populate("category").execPopulate();
+    res.json({
+      message: "service has been saved successfully",
+      data: service,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error", error });
@@ -107,7 +115,9 @@ router.put("/:id", admin, async (req, res) => {
         req.params.id,
         { $set: req.body },
         { new: true }
-      );
+      )
+        .populate("category")
+        .exec();
       res.json({
         message: "service has been updated successfully",
         data: service,
