@@ -47,24 +47,36 @@ router.post("/", [upload.any(), auth], async (req, res) => {
     res.status(400).json({ message: "Internal Server Error.", error });
   }
 });
+// :FIXME: auth need to be added...
+router.put("/updateImage/:id", upload.any(), async (req, res) => {
+  const service = await Category.findByIdAndUpdate(req.params.id, {
+    $set: { imageUrl: req.files[0].url },
+  });
+  service
+    ? res.json({ message: "Image updated successfully" })
+    : res
+        .status(404)
+        .json({ message: "Could not found any Category. Invalid id.." });
+});
+
+// router.put()
 router.put("/:id", validateObjectId, auth, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
       res.status(404).json({ message: "Invalid id. Category not found" });
     } else {
-      const { error } = validate(req.body);
-      if (error) return res.status(400).send(error.details[0].message);
-      else {
-        const category = req.body;
-        await Category.findByIdAndUpdate(req.params.id, {
-          $set: {
-            category,
-          },
-        });
-        res.json({ message: "Saved successfully" });
-      }
+      // const { error } = validate(req.body);
+      // if (error) return res.status(400).send(error.details[0].message);
+      // else {
+      await Category.findByIdAndUpdate(req.params.id, {
+        $set: {
+          name: req.body.name,
+        },
+      });
+      res.json({ message: "Saved successfully" });
     }
+    // }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
   }
