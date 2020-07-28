@@ -10,5 +10,5 @@ module.exports = (err, req, res, next) => {
   // debug
   // silly
 
-  res.status(500).json({ message: "Something failed." });
+  res.status(500).json({ message: "Something failed.", err });
 };

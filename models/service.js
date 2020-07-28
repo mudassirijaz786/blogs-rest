@@ -11,9 +11,9 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: {
+  imageUrl: {
     type: String,
-    required: true,
+    required: false,
   },
   category_id: {
     type: mongoose.Schema.Types.ObjectId,

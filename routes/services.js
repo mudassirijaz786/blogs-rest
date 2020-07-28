@@ -1,4 +1,5 @@
 const admin = require("../middleware/admin");
+const validateObjectId = require("../middleware/validateObjectId");
 const _ = require("lodash");
 const { Service, validate } = require("../models/service");
 const express = require("express");
@@ -76,6 +77,17 @@ router.post("/", admin, async (req, res) => {
   }
 });
 
+router.put("/saveImage/:id", validateObjectId, admin, async (req, res) => {
+  const service = await Service.findByIdAndUpdate(req.params.id, {
+    $set: { imageUrl: req.body.imagePath },
+  });
+  service
+    ? res.json({ message: "Image has been saved successfully" })
+    : res.status(403).json({
+        message:
+          "Error in saving the image. Could not found the Service invalid id.",
+      });
+});
 router.put("/:id", admin, async (req, res) => {
   try {
     let found = await Service.findById({ _id: req.params.id });

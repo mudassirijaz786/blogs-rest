@@ -4,6 +4,7 @@ const { Invoice } = require("../models/invoice");
 const auth = require("../middleware/auth");
 
 const validateObjectId = require("../middleware/validateObjectId");
+
 router.get("/me/:id", validateObjectId, auth, async (req, res) => {
   const invoice = await Invoice.findById(req.params.id);
   invoice

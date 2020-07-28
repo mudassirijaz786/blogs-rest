@@ -44,10 +44,8 @@ const upload = multer({
   // fileFilter: fileFilter,
 });
 router.post("/", upload.any(), (req, res, next) => {
-  res.send(req.files[0].blobPath);
-});
+  // req.files[0].blobPath;
 
-router.get("/:id", (req, res) => {
   try {
     var startDate = new Date();
     var expiryDate = new Date(startDate);
@@ -57,11 +55,11 @@ router.get("/:id", (req, res) => {
     var sharedAccessPolicy = {
       AccessPolicy: {
         Permissions: azure.BlobUtilities.SharedAccessPermissions.READ,
-        Start: startDate,
-        Expiry: expiryDate,
+        // Start: startDate,
+        // Expiry: expiryDate,
       },
     };
-    const blobName = req.params.id;
+    const blobName = req.files[0].blobPath;
 
     var token = blobService.generateSharedAccessSignature(
       "unnic",
@@ -69,8 +67,8 @@ router.get("/:id", (req, res) => {
       sharedAccessPolicy
     );
     var sasUrl = blobService.getUrl("unnic", blobName, token);
-
-    res.json({ url: sasUrl });
+    const path = sasUrl.split("?sp=");
+    res.json({ url: path[0] });
   } catch (err) {
     console.log(err);
     res.send(err);
