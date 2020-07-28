@@ -103,7 +103,19 @@ router.post("/", upload.any(), async (req, res) => {
 //           "Error in saving the image. Could not found the Service invalid id.",
 //       });
 // });
-router.put("/:id", admin, async (req, res) => {
+// :FIXME: auth need to be added...
+router.put("/updateImage/:id", upload.any(), async (req, res) => {
+  const service = await Service.findByIdAndUpdate(req.params.id, {
+    $set: { imageUrl: req.files[0].url },
+  });
+  service
+    ? res.json({ message: "Image updated successfully" })
+    : res
+        .status(404)
+        .json({ message: "Could not found any Service. Invalid id.." });
+});
+
+router.put("/:id", [validateObjectId, admin], async (req, res) => {
   try {
     let found = await Service.findById({ _id: req.params.id });
     if (!found) {
@@ -111,9 +123,16 @@ router.put("/:id", admin, async (req, res) => {
         message: "No service in the system",
       });
     } else {
+      const service1 = req.body;
       const service = await Service.findByIdAndUpdate(
         req.params.id,
-        { $set: req.body },
+        {
+          $set: {
+            name: service1.name,
+            description: service1.description,
+            category: service1.category,
+          },
+        },
         { new: true }
       )
         .populate("category")
@@ -124,7 +143,7 @@ router.put("/:id", admin, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", error });
   }
 });
 

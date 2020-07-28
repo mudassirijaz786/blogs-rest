@@ -44,7 +44,9 @@ router.post("/login", async (req, res) => {
     if (!validPassword)
       return res.status(400).json({ message: "Invalid email or password." });
     const token = user.generateAuthToken();
-    res.json({ token });
+    res
+      .cookie("token", token, { maxAge: 86400 })
+      .json({ message: "User loged in successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -75,9 +77,10 @@ router.post("/register", async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt);
   await user.save();
   const token = user.generateAuthToken();
+  res;
   res
-    .header("x-auth-token", token)
-    .json({ message: "Registered successfully" });
+    .cookie("token", token, { maxAge: 86400 })
+    .json({ message: "User loged in successfully" });
   //   } catch (error) {
   //     res.status(500).json({ error: "Internal Server Error" });
   //   }
@@ -103,7 +106,9 @@ router.post("/resetPassword/:id", validateObjectId, async (req, res) => {
         { new: true }
       );
       const token = user.generateAuthToken();
-      res.json({ token });
+      res
+        .cookie("token", token, { maxAge: 86400 })
+        .json({ message: "User loged in successfully" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
