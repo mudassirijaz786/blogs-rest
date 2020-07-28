@@ -22,19 +22,6 @@ const storage = multerAzure({
     callback(null, blobPath);
   },
 });
-// const upload = multer({ storage: storage });
-
-// const fileFilter = (req, file, cb) => {
-//   if (
-//     file.mimetype === "image/jpeg" ||
-//     file.mimetype === "image/png" ||
-//     file.mimetype === "image/jpg"
-//   ) {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
 
 const upload = multer({
   storage: storage,
@@ -43,36 +30,4 @@ const upload = multer({
   },
   // fileFilter: fileFilter,
 });
-router.post("/", upload.any(), (req, res, next) => {
-  // req.files[0].blobPath;
-
-  try {
-    var startDate = new Date();
-    var expiryDate = new Date(startDate);
-    expiryDate.setMinutes(startDate.getMinutes() + 1000);
-    startDate.setMinutes(startDate.getMinutes() - 1000);
-
-    var sharedAccessPolicy = {
-      AccessPolicy: {
-        Permissions: azure.BlobUtilities.SharedAccessPermissions.READ,
-        // Start: startDate,
-        // Expiry: expiryDate,
-      },
-    };
-    const blobName = req.files[0].blobPath;
-
-    var token = blobService.generateSharedAccessSignature(
-      "unnic",
-      blobName,
-      sharedAccessPolicy
-    );
-    var sasUrl = blobService.getUrl("unnic", blobName, token);
-    const path = sasUrl.split("?sp=");
-    res.json({ url: path[0] });
-  } catch (err) {
-    console.log(err);
-    res.send(err);
-  }
-});
-
-module.exports = router;
+exports.upload = upload;

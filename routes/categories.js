@@ -42,7 +42,7 @@ router.post("/", auth, async (req, res) => {
       res.json({ message: "Category saved successfully" });
     }
   } catch (error) {
-    res.status(400).json({ message: "Internal Server Error." });
+    res.status(400).json({ message: "Internal Server Error.", error });
   }
 });
 router.put("/:id", validateObjectId, auth, async (req, res) => {

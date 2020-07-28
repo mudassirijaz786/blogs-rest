@@ -1,7 +1,9 @@
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
+// const image = require("../middleware/saveImage");
 const _ = require("lodash");
 const { Service, validate } = require("../models/service");
+const { upload } = require("../utils/azureFileService");
 const express = require("express");
 const router = express.Router();
 
@@ -65,29 +67,34 @@ router.get("/byName/:name", async (req, res) => {
   }
 });
 
-router.post("/", admin, async (req, res) => {
+router.post("/", [upload.any(), admin], async (req, res) => {
   try {
+    req.body.image = req.files[0].url;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    const service = new Service(_.pick(req.body, ["name", "description"]));
+    let service = new Service(
+      _.pick(req.body, ["name", "description", "category_id"])
+    );
+    service.imageUrl = req.files[0].url;
     await service.save();
     res.json({ message: "service has been saved successfully", data: service });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error", error });
   }
 });
 
-router.put("/saveImage/:id", validateObjectId, admin, async (req, res) => {
-  const service = await Service.findByIdAndUpdate(req.params.id, {
-    $set: { imageUrl: req.body.imagePath },
-  });
-  service
-    ? res.json({ message: "Image has been saved successfully" })
-    : res.status(403).json({
-        message:
-          "Error in saving the image. Could not found the Service invalid id.",
-      });
-});
+// router.put("/saveImage/:id", validateObjectId, admin, async (req, res) => {
+//   const service = await Service.findByIdAndUpdate(req.params.id, {
+//     $set: { imageUrl: req.body.imagePath },
+//   });
+//   service
+//     ? res.json({ message: "Image has been saved successfully" })
+//     : res.status(403).json({
+//         message:
+//           "Error in saving the image. Could not found the Service invalid id.",
+//       });
+// });
 router.put("/:id", admin, async (req, res) => {
   try {
     let found = await Service.findById({ _id: req.params.id });

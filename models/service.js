@@ -31,8 +31,7 @@ validateService = (service) => {
   const schema = {
     name: Joi.string().max(50).required(),
     description: Joi.string().max(255).required(),
-    image: Joi.string().required(),
-    category_id: Joi.ObjectId().required(),
+    category_id: Joi.objectId().required(),
   };
   return Joi.validate(service, schema);
 };
