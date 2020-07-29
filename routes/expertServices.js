@@ -112,10 +112,10 @@ router.put("/:id", validateObjectId, auth, async (req, res) => {
       const { error } = validate(req.body);
       if (error) return res.status(400).send(error.details[0].message);
       else {
-        const expertService = req.body;
+        const expertServic = req.body;
         await ExpertService.findByIdAndUpdate(req.params.id, {
           $set: {
-            expertService,
+            expertServic,
           },
         });
         res.json({ message: "Saved successfully" });

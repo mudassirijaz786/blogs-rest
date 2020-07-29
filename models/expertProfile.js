@@ -22,12 +22,12 @@ const schema = new mongoose.Schema({
 
   // FIXME: i think no need of services in expert profile, maybe this should be at expert service
   // type array nae hogi?
-  expert_service: [
-    {
-      type: mongoose.Schema.Types.Array,
-      ref: "ExpertService",
-    },
-  ],
+  // expert_services: [
+  //   {
+  //     type: mongoose.Schema.Types.Array,
+  //     ref: "ExpertService",
+  //   },
+  // ],
 });
 
 const ExpertProfile = mongoose.model("ExpertProfile", schema);
