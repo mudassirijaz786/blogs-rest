@@ -35,6 +35,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// >>>>
 router.get("/search/:query", async (req, res) => {
   const query = req.params.query.toLowerCase();
   const services = await Service.find().populate("category").exec();

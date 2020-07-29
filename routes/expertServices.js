@@ -36,25 +36,32 @@ router.get("/myServices/:id", validateObjectId, auth, async (req, res) => {
   }
 });
 
-// FIXME: ... on going
 router.get("/search/:query", auth, async (req, res) => {
   try {
+    const query = req.params.query.toLowerCase();
+
     const expertService = await ExpertService.find()
       .populate("service expert")
       .exec();
-    let experts = [];
-    expertService.forEach((s) => {
-      if (s.service.name.contains(req.params.query)) {
-      }
+    var experts = [];
+    expertService.forEach((obj) => {
+      const service = obj.service;
+      if (
+        service.name.toLowerCase().includes(query) ||
+        service.description.toLowerCase().includes(query)
+      )
+        experts.push(obj);
     });
 
-    if (expertService) {
-      res.json({ expertService });
+    if (experts.length > 0) {
+      res.json({ data: experts });
     } else {
-      res.status(404).json({ message: "expert Service not found." });
+      res.status(400).json({
+        message: "Could not found any service regarding your search ...",
+      });
     }
   } catch (error) {
-    res.status(400).json({ message: "Internal Server Error." });
+    res.status(400).json({ message: "Internal Server Error.", error });
   }
 });
 
