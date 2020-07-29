@@ -9,6 +9,21 @@ const { ExpertService, validate } = require("../models/expertService.js");
 router.get("/:id", validateObjectId, auth, async (req, res) => {
   try {
     const expertService = await ExpertService.findById(req.params.id)
+      .populate("service expert")
+      .exec();
+    if (expertService) {
+      res.json({ expertService });
+    } else {
+      res.status(404).json({ message: "expert Service not found." });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Internal Server Error." });
+  }
+});
+
+router.get("/myServices/:id", validateObjectId, auth, async (req, res) => {
+  try {
+    const expertService = await ExpertService.find({ expert: req.params.id })
       .populate("service")
       .exec();
     if (expertService) {
@@ -21,9 +36,33 @@ router.get("/:id", validateObjectId, auth, async (req, res) => {
   }
 });
 
+// FIXME: ... on going
+router.get("/search/:query", auth, async (req, res) => {
+  try {
+    const expertService = await ExpertService.find()
+      .populate("service expert")
+      .exec();
+    let experts = [];
+    expertService.forEach((s) => {
+      if (s.service.name.contains(req.params.query)) {
+      }
+    });
+
+    if (expertService) {
+      res.json({ expertService });
+    } else {
+      res.status(404).json({ message: "expert Service not found." });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "Internal Server Error." });
+  }
+});
+
 router.get("/", auth, async (req, res) => {
   try {
-    const expertService = await ExpertService.find().populate("service").exec();
+    const expertService = await ExpertService.find()
+      .populate("service expert")
+      .exec();
     if (expertService) {
       res.json({ data: expertService });
     } else {
@@ -45,7 +84,7 @@ router.post("/", auth, async (req, res) => {
         _.pick(req.body, ["expert", "service", "price"])
       );
       await expertService.save();
-      await expertService.populate("service").execPopulate();
+      await expertService.populate("service expert").execPopulate();
       res.json({
         message: "Expert Service saved successfully",
         data: expertService,
