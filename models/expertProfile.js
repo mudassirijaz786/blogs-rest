@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const schema = new mongoose.Schema({
-  expert_id: {
+  expert: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -21,12 +21,13 @@ const schema = new mongoose.Schema({
   },
 
   // FIXME: i think no need of services in expert profile, maybe this should be at expert service
-  // services: [
-  //   {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: "Service",
-  //   },
-  // ],
+  // type array nae hogi?
+  expert_service: [
+    {
+      type: mongoose.Schema.Types.Array,
+      ref: "ExpertService",
+    },
+  ],
 });
 
 const ExpertProfile = mongoose.model("ExpertProfile", schema);
