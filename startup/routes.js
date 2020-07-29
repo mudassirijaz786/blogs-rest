@@ -1,14 +1,11 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 
-const customers = require("../routes/customers");
 const contactUs = require("../routes/contactUs");
 const admin = require("../routes/admins");
 const service = require("../routes/services");
-const serviceProvider = require("../routes/serviceProviders");
-const address = require("../routes/addresses");
-const company = require("../routes/companies");
-const companyService = require("../routes/companyServices");
+const expertService = require("../routes/expertServices");
+const expertProfile = require("../routes/expertProfiles");
 const appointment = require("../routes/appointments");
 const category = require("../routes/categories");
 const notification = require("../routes/notifications");
@@ -22,16 +19,13 @@ const error = require("../middleware/error");
 module.exports = (app) => {
   app.use(express.json());
   app.use(cookieParser());
-  app.use("/api/customer", customers);
   app.use("/api/contactUs", contactUs);
   app.use("/api/appointment", appointment);
   app.use("/api/admin", admin);
   app.use("/api/service", service);
-  app.use("/api/company", company);
-  app.use("/api/address", address);
-  app.use("/api/companyService", companyService);
+  app.use("/api/expertService", expertService);
+  app.use("/api/expertProfile", expertProfile);
   app.use("/api/category", category);
-  app.use("/api/serviceProvider", serviceProvider);
   app.use("/notifications", notification);
   app.use("/api/tacs", tacs);
   app.use("/api/faqs", faqs);

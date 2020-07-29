@@ -92,18 +92,6 @@ router.post("/", upload.any(), async (req, res) => {
   }
 });
 
-// router.put("/saveImage/:id", validateObjectId, admin, async (req, res) => {
-//   const service = await Service.findByIdAndUpdate(req.params.id, {
-//     $set: { imageUrl: req.body.imagePath },
-//   });
-//   service
-//     ? res.json({ message: "Image has been saved successfully" })
-//     : res.status(403).json({
-//         message:
-//           "Error in saving the image. Could not found the Service invalid id.",
-//       });
-// });
-// :FIXME: auth need to be added...
 router.put("/updateImage/:id", upload.any(), async (req, res) => {
   const service = await Service.findByIdAndUpdate(req.params.id, {
     $set: { imageUrl: req.files[0].url },

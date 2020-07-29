@@ -9,6 +9,7 @@ router.get("/", auth, async (req, res) => {
   const expertProfile = await ExpertProfile.find();
   res.json({ data: expertProfile });
 });
+
 router.get("/me/:id", auth, async (req, res) => {
   const expertProfile = await ExpertProfile.findById(req.params.id);
   res.json({ data: expertProfile });
@@ -23,7 +24,7 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/addService", auth, async (req, res) => {
-  const expertProfile = await getExpertProfile.findOneAndUpdate(
+  await ExpertProfile.findOneAndUpdate(
     { expert_id: req.body.expert_id },
     {
       $push: {
@@ -36,21 +37,25 @@ router.put("/addService", auth, async (req, res) => {
 });
 
 router.put("/deleteService", auth, async (req, res) => {
-  const expertProfile = await ExpertProfile.findOneAndUpdate(
+  await ExpertProfile.findOneAndUpdate(
     { expert_id: req.body.expert_id },
     { $pull: { services: req.body.service_id } }
   );
   res.json({ message: "Service has been removed successfully" });
 });
+
 router.put("/updateProfile/:id", auth, async (req, res) => {
-  const expertProfile = await ExpertProfile.findByIdAndUpdate(
+  await ExpertProfile.findByIdAndUpdate(
     req.params.id,
     { $set: req.body },
     { new: true }
   );
   res.json({ message: "ExpertProfile updated successfully" });
 });
+
 router.delete("/:id", auth, async (req, res) => {
   const expertProfile = await ExpertProfile.findByIdAndRemove(req.params.id);
   res.json({ message: "expertProfile has removed..." });
 });
+
+module.exports = router;

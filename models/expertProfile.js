@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-// is ko abi ignore kr dena ha ...
 const schema = new mongoose.Schema({
   expert_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Expert",
+    ref: "User",
     required: true,
   },
   totalServicesDone: {
@@ -20,12 +19,14 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  services: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Service",
-    },
-  ],
+
+  // FIXME: i think no need of services in expert profile, maybe this should be at expert service
+  // services: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "Service",
+  //   },
+  // ],
 });
 
 const ExpertProfile = mongoose.model("ExpertProfile", schema);
