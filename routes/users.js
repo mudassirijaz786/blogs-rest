@@ -45,45 +45,38 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password." });
     const token = user.generateAuthToken();
     res
-      .cookie("token", token, { maxAge: 86400 })
-      .json({ message: "User loged in successfully" });
+      // .cookie("token", token, { maxAge: 86400 })
+      .json({
+        message: "User loged in successfully",
+        data: user,
+        token: token,
+      });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 router.post("/register", async (req, res) => {
-  //   try {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-  let user = await User.findOne({ email: req.body.email });
-  if (user)
-    return res.status(401).json({
-      error: `User with email ${req.body.email} is already registered`,
-    });
-  user = new User(
-    _.pick(req.body, [
-      "firstName",
-      "lastName",
-      "gender",
-      "address",
-      "role",
-      "email",
-      "password",
-      "mobileNumber",
-    ])
-  );
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-  await user.save();
-  const token = user.generateAuthToken();
-  res;
-  res
-    .cookie("token", token, { maxAge: 86400 })
-    .json({ message: "User loged in successfully" });
-  //   } catch (error) {
-  //     res.status(500).json({ error: "Internal Server Error" });
-  //   }
+  try {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    let user = await User.findOne({ email: req.body.email }).exec();
+    if (user)
+      return res.status(401).json({
+        error: `User with email ${req.body.email} is already registered`,
+      });
+    user = new User(req.body);
+    const salt = await bcrypt.genSalt(12);
+    user.password = await bcrypt.hash(user.password, salt);
+    await user.save();
+    const token = user.generateAuthToken();
+    res
+      .cookie("token", token, { maxAge: 86400 })
+      .status(200)
+      .json({ message: "User registered successfully", statusCode: 200 });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 router.post("/resetPassword/:id", validateObjectId, async (req, res) => {

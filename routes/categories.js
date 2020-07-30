@@ -31,7 +31,6 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// :TODO: image path to be addedd.....
 router.post("/", [upload.any(), auth], async (req, res) => {
   try {
     req.body.imageUrl = req.files[0].url;
@@ -47,7 +46,7 @@ router.post("/", [upload.any(), auth], async (req, res) => {
     res.status(400).json({ message: "Internal Server Error.", error });
   }
 });
-// :FIXME: auth need to be added...
+
 router.put("/updateImage/:id", upload.any(), async (req, res) => {
   const service = await Category.findByIdAndUpdate(req.params.id, {
     $set: { imageUrl: req.files[0].url },
@@ -59,8 +58,8 @@ router.put("/updateImage/:id", upload.any(), async (req, res) => {
         .json({ message: "Could not found any Category. Invalid id.." });
 });
 
-// router.put()
-router.put("/:id", validateObjectId, auth, async (req, res) => {
+router.put("/:id", [validateObjectId, auth], async (req, res) => {
+  console.log(req.body);
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
@@ -81,9 +80,9 @@ router.put("/:id", validateObjectId, auth, async (req, res) => {
     res.status(400).json({ message: "Internal Server Error." });
   }
 });
-router.delete("/:id", validateObjectId, auth, async (req, res) => {
+router.delete("/:id", [validateObjectId, auth], async (req, res) => {
   try {
-    const category = await Category.findByIdAndRemove(req.param.id);
+    const category = await Category.findByIdAndRemove(req.params.id);
     if (category) {
       res.json({ message: "category deleted successfully." });
     } else {

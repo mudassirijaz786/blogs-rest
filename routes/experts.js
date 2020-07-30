@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const validateObjectId = require("../middleware/validateObjectId");
+const serviceProvider = require("../middleware/serviceProvider");
+const { upload } = require("../utils/azureFileService");
 
 const auth = require("../middleware/auth");
 const { Expert } = require("../models/expert");
@@ -9,15 +12,14 @@ router.get("/", auth, async (req, res) => {
   try {
     const expertProfiles = await Expert.find()
       .populate({
-        path: "expert_service",
-        model: "ExpertService",
+        path: "provider",
+        model: "User",
+        select: "-password",
       })
       .exec();
-    if (!expertProfiles) {
-      res.status(404).json({ message: "No expert  found" });
-    } else {
-      res.json({ data: expertProfiles });
-    }
+    !expertProfiles
+      ? res.status(404).json({ message: "No expert  found" })
+      : res.json({ data: expertProfiles });
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
   }
@@ -26,25 +28,36 @@ router.get("/", auth, async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
   try {
     const expert = await Expert.findById(req.params.id)
-      .populate("expert_service")
+      .populate({
+        path: "provider",
+        model: "User",
+        select: "-password",
+      })
       .exec();
-    if (!expert) {
-      res.status(404).json({ message: "Expert  not found" });
-    } else {
-      res.json({ data: expert });
-    }
+    !expert
+      ? res.status(404).json({ message: "Expert  not found" })
+      : res.json({ data: expert });
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.any(), async (req, res) => {
   try {
-    const expert = new Expert(_.pick(req.body, ["detail", "expert"]));
+    req.body.imageUrl = req.files[0].url;
+    const expert = new Expert(
+      _.pick(req.body, ["detail", "address", "name", "provider", "imageUrl"])
+    );
     await expert.save();
-    await expert.populate("expert_service").execPopulate();
+    await expert
+      .populate({
+        path: "provider",
+        model: "User",
+        select: "-password",
+      })
+      .execPopulate();
     res.json({
-      message: "Expert  saved successfully",
+      message: "Expert saved successfully",
       data: expert,
     });
   } catch (error) {
@@ -52,48 +65,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// router.put("/addService", auth, async (req, res) => {
-//   try {
-//     await Expert.findOneAndUpdate(
-//       { expert: req.body.expert },
-//       {
-//         $push: {
-//           services: req.body.service,
-//         },
-//       },
-//       { new: true }
-//     );
-//     res.json({ message: "Service added to Expert Profile successfully" });
-//   } catch (error) {
-//     res.status(400).json({ message: "Internal Server Error." });
-//   }
-// });
-
-// router.put("/deleteService", auth, async (req, res) => {
-//   await Expert.findOneAndUpdate(
-//     { expert_id: req.body.expert_id },
-//     { $pull: { services: req.body.service_id } }
-//   );
-//   res.json({ message: "Service has been removed successfully" });
-// });
-
-router.put("/updateProfile/:id", auth, async (req, res) => {
-  await Expert.findByIdAndUpdate(
-    req.params.id,
-    { $set: req.body },
-    { new: true }
-  );
+router.put("/:id", [validateObjectId], async (req, res) => {
+  const found = await Expert.findById(req.params.id);
+  !found
+    ? res.status(404).json({ message: "not found" })
+    : await Expert.findByIdAndUpdate(
+        req.params.id,
+        { $set: req.body },
+        { new: true }
+      );
   res.json({ message: "Expert updated successfully" });
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [validateObjectId], async (req, res) => {
   try {
     const found = await Expert.findByIdAndRemove(req.params.id);
-    if (!found) {
-      res.status(404).json({ message: "expert  not found" });
-    } else {
-      res.json({ message: "expert Profile has removed..." });
-    }
+    !found
+      ? res.status(404).json({ message: "expert  not found" })
+      : res.json({ message: "expert Profile has removed" });
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
   }

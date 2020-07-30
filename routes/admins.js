@@ -48,8 +48,9 @@ router.post("/login", async (req, res) => {
     if (!validPassword)
       return res.status(400).json({ error: "Invalid email or password." });
     const token = admin.generateAuthToken();
-    res.header("x-auth-token", token);
-    res.send({ token });
+    res
+      .cookie("token", token, { maxAge: 86400 })
+      .json({ message: "User loged in successfully" });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -70,7 +71,9 @@ router.post("/register", async (req, res) => {
       admin.password = await bcrypt.hash(admin.password, salt);
       await admin.save();
       const token = admin.generateAuthToken();
-      res.header("x-auth-token", token).json({ token });
+      res
+        .cookie("token", token, { maxAge: 86400 })
+        .json({ message: "User loged in successfully" });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });

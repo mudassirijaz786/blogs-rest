@@ -6,10 +6,23 @@ const schema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  address: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
   totalServicesDone: {
     type: Number,
     required: true,
     default: 0,
+  },
+  status: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
   rating: {
     type: String,
@@ -17,6 +30,10 @@ const schema = new mongoose.Schema({
     default: "5.0",
   },
   detail: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
     type: String,
     required: true,
   },

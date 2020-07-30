@@ -98,24 +98,28 @@ router.put("/updateImage/:id", upload.any(), async (req, res) => {
 
 router.put("/:id", [validateObjectId, admin], async (req, res) => {
   try {
-    let found = await Service.findById({ _id: req.params.id });
+    let found = await Service.findById(req.params.id);
     if (!found) {
       return res.status(404).json({
         message: "No service in the system",
       });
     } else {
       const service1 = req.body;
+      console.log(service1);
       const service = await Service.findByIdAndUpdate(
         req.params.id,
         {
           $set: {
-            service1,
+            name: service1.name,
+            description: service1.description,
+            category: service1.category,
           },
         },
         { new: true }
       )
         .populate("category")
         .exec();
+      console.log(service);
       res.json({
         message: "service has been updated successfully",
         data: service,

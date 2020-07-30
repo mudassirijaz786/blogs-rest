@@ -9,7 +9,18 @@ const { ExpertService, validate } = require("../models/expertService.js");
 router.get("/:id", validateObjectId, auth, async (req, res) => {
   try {
     const expertService = await ExpertService.findById(req.params.id)
-      .populate("service expert")
+      .populate({
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      })
+      .populate({
+        path: "expert",
+        model: "Expert",
+      })
       .exec();
     if (expertService) {
       res.json({ expertService });
@@ -24,7 +35,18 @@ router.get("/:id", validateObjectId, auth, async (req, res) => {
 router.get("/myServices/:id", validateObjectId, auth, async (req, res) => {
   try {
     const expertService = await ExpertService.find({ expert: req.params.id })
-      .populate("service")
+      .populate({
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      })
+      .populate({
+        path: "expert",
+        model: "Expert",
+      })
       .exec();
     if (expertService) {
       res.json({ expertService });
@@ -41,7 +63,18 @@ router.get("/search/:query", auth, async (req, res) => {
     const query = req.params.query.toLowerCase();
 
     const expertService = await ExpertService.find()
-      .populate("service expert")
+      .populate({
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      })
+      .populate({
+        path: "expert",
+        model: "Expert",
+      })
       .exec();
     var experts = [];
     expertService.forEach((obj) => {
@@ -68,7 +101,18 @@ router.get("/search/:query", auth, async (req, res) => {
 router.get("/", auth, async (req, res) => {
   try {
     const expertService = await ExpertService.find()
-      .populate("service expert")
+      .populate({
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      })
+      .populate({
+        path: "expert",
+        model: "Expert",
+      })
       .exec();
     if (expertService) {
       res.json({ data: expertService });
@@ -91,7 +135,20 @@ router.post("/", auth, async (req, res) => {
         _.pick(req.body, ["expert", "service", "price"])
       );
       await expertService.save();
-      await expertService.populate("service expert").execPopulate();
+      await expertService
+        .populate({
+          path: "service",
+          model: "Service",
+          populate: {
+            path: "category",
+            model: "Category",
+          },
+        })
+        .populate({
+          path: "expert",
+          model: "Expert",
+        })
+        .execPopulate();
       res.json({
         message: "Expert Service saved successfully",
         data: expertService,
