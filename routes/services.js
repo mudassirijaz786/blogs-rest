@@ -37,10 +37,7 @@ router.get("/search/:query", async (req, res) => {
   const services = await Service.find().populate("category").exec();
   var foundServices = [];
   services.forEach((service) => {
-    if (
-      service.name.toLowerCase().includes(query) ||
-      service.description.toLowerCase().includes(query)
-    ) {
+    if (service.category.name.toLowerCase().includes(query)) {
       foundServices.push(service);
     }
   });

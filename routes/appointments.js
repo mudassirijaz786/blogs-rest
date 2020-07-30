@@ -46,7 +46,7 @@ router.get("/me/:id", validateObjectId, auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
   const appointment = new Appointment(
-    _.pick(req.body, ["timeSlot", "expert_id", "customer_id", "service_id"])
+    _.pick(req.body, ["timeSlot", "expert", "customer", "service"])
   );
   await appointment.save();
   appointment

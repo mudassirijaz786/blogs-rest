@@ -59,43 +59,41 @@ router.get("/myServices/:id", validateObjectId, auth, async (req, res) => {
 });
 
 router.get("/search/:query", auth, async (req, res) => {
-  try {
-    const query = req.params.query.toLowerCase();
+  // try {
+  const query = req.params.query.toLowerCase();
+  console.log(query);
+  const expertService = await ExpertService.find()
+    .populate({
+      path: "service",
+      model: "Service",
+      populate: {
+        path: "category",
+        model: "Category",
+      },
+    })
+    .populate({
+      path: "expert",
+      model: "Expert",
+    })
+    .exec();
+  console.log(expertService);
 
-    const expertService = await ExpertService.find()
-      .populate({
-        path: "service",
-        model: "Service",
-        populate: {
-          path: "category",
-          model: "Category",
-        },
-      })
-      .populate({
-        path: "expert",
-        model: "Expert",
-      })
-      .exec();
-    var experts = [];
-    expertService.forEach((obj) => {
-      const service = obj.service;
-      if (
-        service.name.toLowerCase().includes(query) ||
-        service.description.toLowerCase().includes(query)
-      )
-        experts.push(obj);
+  var experts = [];
+  expertService.forEach((obj) => {
+    const service = obj.service.category;
+    if (service.name.toLowerCase().includes(query)) experts.push(obj);
+  });
+
+  if (experts.length > 0) {
+    res.json({ data: experts });
+  } else {
+    res.status(400).json({
+      message: "Could not found any service regarding your search ...",
     });
-
-    if (experts.length > 0) {
-      res.json({ data: experts });
-    } else {
-      res.status(400).json({
-        message: "Could not found any service regarding your search ...",
-      });
-    }
-  } catch (error) {
-    res.status(400).json({ message: "Internal Server Error.", error });
   }
+  // } catch (error) {
+  //   res.status(400).json({ message: "Internal Server Error.", error });
+  // }
 });
 
 router.get("/", auth, async (req, res) => {
