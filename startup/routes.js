@@ -13,6 +13,7 @@ const tacs = require("../routes/tacs.js");
 const faqs = require("../routes/faqs.js");
 const users = require("../routes/users.js");
 const employee = require("../routes/employees.js");
+const handleResponse = require("../middleware/handleResponse");
 
 const error = require("../middleware/error");
 // const { Appointment } = require("../models/appointment");
@@ -32,6 +33,6 @@ module.exports = (app) => {
   app.use("/api/faqs", faqs);
   app.use("/api/users", users);
   app.use("/api/employee", employee);
-
+  // app.use(handleResponse);
   app.use(error);
 };

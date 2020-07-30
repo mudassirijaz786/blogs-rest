@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema({
     // required: true,
     default: false,
   },
+  imageUrl: {
+    type: String,
+    required: true,
+    default: "",
+  },
 });
 
 // token generation

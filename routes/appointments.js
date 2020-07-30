@@ -4,9 +4,36 @@ const auth = require("../middleware/auth");
 const _ = require("lodash");
 const { Appointment } = require("../models/appointment");
 const validateObjectId = require("../middleware/validateObjectId");
+const { model } = require("mongoose");
 
 router.get("/", auth, async (req, res) => {
-  const appointments = await Appointment.find();
+  const appointments = await Appointment.find()
+    .populate({
+      path: "expert",
+      mode: "Expert",
+      populate: {
+        path: "provider",
+        model: "User",
+        select: "-password",
+      },
+    })
+    .populate({
+      path: "customer",
+      model: "User",
+    })
+    .populate({
+      path: "service",
+      model: "ExpertService",
+      populate: {
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      },
+    })
+    .exec();
 
   appointments.length > 0
     ? res.json({ data: appointments })
@@ -37,8 +64,115 @@ router.get("/status", auth, async (req, res) => {
   res.json(data);
 });
 
+router.get("/pendingAppointments/:id", async (req, res) => {
+  const appointments = await Appointment.find({
+    customer: req.params.id,
+    status: "Pending",
+  })
+    .populate({
+      path: "expert",
+      mode: "Expert",
+      populate: {
+        path: "provider",
+        model: "User",
+        select: "-password",
+      },
+    })
+    .populate({
+      path: "customer",
+      model: "User",
+    })
+    .populate({
+      path: "service",
+      model: "ExpertService",
+      populate: {
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      },
+    })
+    .exec();
+
+  appointments.length > 0
+    ? res.json({ statusCode: 200, data: appointments })
+    : res.status(404).json({
+        statusCode: 404,
+        message: "Could not found any appointments pending.",
+      });
+});
+
+router.get("/completedAppointments/:id", async (req, res) => {
+  const appointments = await Appointment.find({
+    customer: req.params.id,
+    status: "Completed",
+  })
+    .populate({
+      path: "expert",
+      mode: "Expert",
+      populate: {
+        path: "provider",
+        model: "User",
+        select: "-password",
+      },
+    })
+    .populate({
+      path: "customer",
+      model: "User",
+    })
+    .populate({
+      path: "service",
+      model: "ExpertService",
+      populate: {
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      },
+    })
+    .exec();
+
+  appointments.length > 0
+    ? res.json({ statusCode: 200, data: appointments })
+    : res.status(404).json({
+        statusCode: 404,
+        message: "Could not found any appointments completed.",
+      });
+});
+
 router.get("/me/:id", validateObjectId, auth, async (req, res) => {
-  const appointment = await Appointment.findById(req.params.id);
+  const appointment = await Appointment.findById(req.params.id)
+    .populate({
+      path: "expert",
+      mode: "Expert",
+      populate: {
+        path: "provider",
+        model: "User",
+        select: "-password",
+      },
+    })
+    .populate({
+      path: "customer",
+      model: "User",
+    })
+    .populate({
+      path: "service",
+      model: "ExpertService",
+      populate: {
+        path: "service",
+        model: "Service",
+        populate: {
+          path: "category",
+          model: "Category",
+        },
+      },
+    })
+    .exec();
+
   appointment
     ? res.json({ data: appointment })
     : res.status(403).json({ message: "Not found.." });
@@ -67,6 +201,7 @@ router.put("/setStatus/:id", validateObjectId, auth, async (req, res) => {
         message: "There is error setting status to " + req.body.status,
       });
 });
+
 router.put("/:id", validateObjectId, auth, async (req, res) => {
   const appointment = await Appointment.findByIdAndUpdate(
     req.params.id,
