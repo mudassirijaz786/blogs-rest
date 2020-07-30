@@ -16,7 +16,7 @@ const schema = new mongoose.Schema({
     required: true,
     default: new Date(),
   },
-  expert_id: {
+  expert: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Expert",
     required: true,
@@ -31,14 +31,14 @@ const schema = new mongoose.Schema({
     required: true,
     default: new Date(),
   },
-  service_id: {
+  service: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Service",
+    ref: "ExpertService",
     required: true,
   },
-  customer_id: {
+  customer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer",
+    ref: "User",
     required: true,
   },
   status: {

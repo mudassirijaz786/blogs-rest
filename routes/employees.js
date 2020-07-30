@@ -34,7 +34,17 @@ router.get("/me/:id", validateObjectId, auth, async (req, res) => {
         .json({ message: "Could not find employee with given id" });
 });
 router.get("/", auth, async (req, res) => {
-  const data = await Employee.find().populate("expert_profile").exec();
+  const data = await Employee.find()
+    .populate({
+      path: "expert_profile",
+      model: "ExpertProfile",
+      populate: {
+        path: "expert",
+        model: "User",
+        select: "firstName email lastName",
+      },
+    })
+    .exec();
   data.length > 0
     ? res.json({ data })
     : res
@@ -85,7 +95,17 @@ router.delete("/:id", async (req, res) => {
 
 router.get("/searchEmployee/:query", async (req, res) => {
   try {
-    const employees = await Employee.find();
+    const employees = await Employee.find()
+      .populate({
+        path: "expert_profile",
+        model: "ExpertProfile",
+        populate: {
+          path: "expert",
+          model: "User",
+          select: "firstName email lastName",
+        },
+      })
+      .exec();
     const query = req.params.query.toLowerCase();
     var foundedEmployee = [];
     employees.forEach((employee) => {
@@ -136,7 +156,6 @@ router.put("/update/:id", auth, async (req, res) => {
       );
       res.json({
         message: "employee has been updateed successfully",
-        data: employees,
       });
     }
   } catch (error) {

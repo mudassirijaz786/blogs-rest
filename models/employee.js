@@ -63,9 +63,9 @@ const employeeSchema = new mongoose.Schema({
     // required: true,
     default: false,
   },
-  expert_profile: {
+  expert: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "ExpertProfile",
+    ref: "Expert",
     required: true,
   },
   imageUrl: {

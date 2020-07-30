@@ -14,7 +14,7 @@ const expertServiceSchema = new mongoose.Schema({
   },
   expert: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Expert",
     required: true,
   },
 });

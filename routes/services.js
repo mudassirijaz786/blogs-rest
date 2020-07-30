@@ -10,11 +10,9 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const service = await Service.find().populate("category").exec();
-    if (!service) {
-      res.status(404).json({ message: "no service in database" });
-    } else {
-      res.json({ data: service });
-    }
+    !service
+      ? res.status(404).json({ message: "no service in database" })
+      : res.json({ data: service });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -25,11 +23,9 @@ router.get("/:id", async (req, res) => {
     const service = await Service.findById(req.params.id)
       .populate("category")
       .exec();
-    if (service) {
-      res.json({ data: service });
-    } else {
-      res.status(404).json({ message: "service not found" });
-    }
+    service
+      ? res.json({ data: service })
+      : res.status(404).json({ message: "service not found" });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -48,13 +44,11 @@ router.get("/search/:query", async (req, res) => {
       foundServices.push(service);
     }
   });
-  if (foundServices.length > 0) {
-    res.json({ data: foundServices });
-  } else {
-    res.status(400).json({
-      message: "Could not found any service regarding your search ...",
-    });
-  }
+  foundServices.length > 0
+    ? res.json({ data: foundServices })
+    : res.status(400).json({
+        message: "Could not found any service regarding your search",
+      });
 });
 
 router.get("/byName/:name", async (req, res) => {
@@ -62,11 +56,9 @@ router.get("/byName/:name", async (req, res) => {
     const services = await Service.find({ name: req.params.name })
       .populate("category")
       .exec();
-    if (!services) {
-      res.status(400).json({ message: "No Service found!" });
-    } else {
-      res.json({ data: services });
-    }
+    !services
+      ? res.status(400).json({ message: "No Service found!" })
+      : res.json({ data: services });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error.." });
   }
@@ -101,7 +93,7 @@ router.put("/updateImage/:id", upload.any(), async (req, res) => {
     ? res.json({ message: "Image updated successfully" })
     : res
         .status(404)
-        .json({ message: "Could not found any Service. Invalid id.." });
+        .json({ message: "Could not found any Service. Invalid id" });
 });
 
 router.put("/:id", [validateObjectId, admin], async (req, res) => {
@@ -117,9 +109,7 @@ router.put("/:id", [validateObjectId, admin], async (req, res) => {
         req.params.id,
         {
           $set: {
-            name: service1.name,
-            description: service1.description,
-            category: service1.category,
+            service1,
           },
         },
         { new: true }
@@ -139,11 +129,9 @@ router.put("/:id", [validateObjectId, admin], async (req, res) => {
 router.delete("/:id", admin, async (req, res) => {
   try {
     const service = await Service.findByIdAndRemove(req.params.id);
-    if (!service) {
-      res.status(404).json({ message: "No service found" });
-    } else {
-      res.json({ message: "service has been deleted successfully" });
-    }
+    !service
+      ? res.status(404).json({ message: "No service found" })
+      : res.json({ message: "service has been deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }

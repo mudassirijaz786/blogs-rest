@@ -20,6 +20,7 @@ router.get("/totalAppointments", auth, async (req, res) => {
 // :TODO: Need to be tested accurately...
 // :FIXME: Need to be tested accurately...
 router.get("/appointmentToday", auth, async (req, res) => {
+  console.log(new Data().toString());
   const appointments = await Appointment.find({ created_at: new Date().now });
 });
 

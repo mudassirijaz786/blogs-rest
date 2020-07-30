@@ -5,7 +5,7 @@ const contactUs = require("../routes/contactUs");
 const admin = require("../routes/admins");
 const service = require("../routes/services");
 const expertService = require("../routes/expertServices");
-const expertProfile = require("../routes/expertProfiles");
+const expert = require("../routes/experts");
 const appointment = require("../routes/appointments");
 const category = require("../routes/categories");
 const notification = require("../routes/notifications");
@@ -25,7 +25,7 @@ module.exports = (app) => {
   app.use("/api/admin", admin);
   app.use("/api/service", service);
   app.use("/api/expertService", expertService);
-  app.use("/api/expertProfile", expertProfile);
+  app.use("/api/expert", expert);
   app.use("/api/category", category);
   app.use("/notifications", notification);
   app.use("/api/tacs", tacs);
