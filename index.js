@@ -3,9 +3,9 @@ const express = require("express");
 const config = require("config");
 const app = express();
 
+require("./startup/cors")(app);
 require("./startup/security")(app);
 require("./startup/logging")();
-require("./startup/cors")(app);
 require("./startup/routes")(app);
 require("./startup/utils")(app);
 require("./startup/db")();

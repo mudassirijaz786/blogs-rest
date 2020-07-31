@@ -15,5 +15,5 @@
     "REGION": "us-east-2",
     "Bucket": "grokonez-s3-bucket"
   },
-  "socket": true
+  "socket": false
 }
