@@ -4,6 +4,14 @@ const config = require("config");
 const app = express();
 
 require("./startup/cors")(app);
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "localhost:3000"); // update to match the domain you will make the request from
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 require("./startup/security")(app);
 require("./startup/logging")();
 require("./startup/routes")(app);
