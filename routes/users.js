@@ -24,23 +24,23 @@ router.get("/me/:id", validateObjectId, auth, async (req, res) => {
     if (user) {
       res.status(200).json({ statusCode: 200, data: user });
     } else {
-      res.status(404).json({ statusCode: 404, error: "Not Found!" });
+      res.status(404).json({ statusCode: 404, message: "Not Found!" });
     }
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
-    console.log('called');
+    console.log("called");
     const { error } = validateLogin(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     let user = await User.findOne({ email: req.body.email });
     if (!user)
       return res
         .status(400)
-        .json({ statusCode: 400, error: "Invalid email or password." });
+        .json({ statusCode: 400, message: "Invalid email or password." });
     const validPassword = await bcrypt.compare(
       req.body.password,
       user.password
@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
     if (!validPassword)
       return res
         .status(400)
-        .json({ statusCode: 400, error: "Invalid email or password." });
+        .json({ statusCode: 400, message: "Invalid email or password." });
     const token = user.generateAuthToken();
     res.status(200).json({
       message: "User logged in successfully",
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
       token: token,
     });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
@@ -69,7 +69,7 @@ router.post("/register", async (req, res) => {
     if (user)
       return res.status(401).json({
         statusCode: 401,
-        error: `User with email ${req.body.email} is already registered`,
+        message: `User with email ${req.body.email} is already registered`,
       });
     user = new User(req.body);
     const salt = await bcrypt.genSalt(12);
@@ -83,7 +83,7 @@ router.post("/register", async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
@@ -93,7 +93,7 @@ router.post("/resetPassword/:id", validateObjectId, async (req, res) => {
     if (!userId) {
       res.status(404).json({
         statusCode: 404,
-        error: "User not found in system",
+        message: "User not found in system",
       });
     } else {
       const salt = await bcrypt.genSalt(10);
@@ -115,7 +115,7 @@ router.post("/resetPassword/:id", validateObjectId, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
@@ -126,7 +126,7 @@ router.post("/resetPassword/sendEmail", async (req, res) => {
     if (!user) {
       res.status(404).json({
         statusCode: 404,
-        error: `User with ${req.body.email} not found in system`,
+        message: `User with ${req.body.email} not found in system`,
       });
     } else {
       sendEmailForResetPassword(
@@ -141,7 +141,7 @@ router.post("/resetPassword/sendEmail", async (req, res) => {
       message: "An email with the link has been forwarded to you",
     });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
@@ -150,7 +150,9 @@ router.delete("/userRemove/:id", admin, async (req, res) => {
   try {
     const user = await User.findByIdAndRemove(req.params.id);
     if (!user) {
-      return res.status(404).json({ statusCode: 404, error: "User not found" });
+      return res
+        .status(404)
+        .json({ statusCode: 404, message: "User not found" });
     } else {
       res.json({
         statusCode: 200,
@@ -158,7 +160,7 @@ router.delete("/userRemove/:id", admin, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
@@ -174,7 +176,7 @@ router.get("/searchUser/:id", validateObjectId, admin, async (req, res) => {
     });
     res.json({ data: foundedUser });
   } catch (error) {
-    res.status(500).json({ statusCode: 500, error: "Internal Server Error" });
+    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
 
@@ -201,7 +203,7 @@ router.put("/updateUser/:id", [validateObjectId, auth], async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
