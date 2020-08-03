@@ -46,7 +46,14 @@ router.post("/", upload.any(), async (req, res) => {
   try {
     req.body.imageUrl = req.files[0].url;
     const expert = new Expert(
-      _.pick(req.body, ["detail", "address", "name", "provider", "imageUrl"])
+      _.pick(req.body, [
+        "detail",
+        "address",
+        "name",
+        "provider",
+        "experties",
+        "imageUrl",
+      ])
     );
     await expert.save();
     await expert
