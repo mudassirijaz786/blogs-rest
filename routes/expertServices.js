@@ -20,6 +20,10 @@ router.get("/:id", validateObjectId, auth, async (req, res) => {
       .populate({
         path: "expert",
         model: "Expert",
+        populate: {
+          path: "provider",
+          model: "User",
+        },
       })
       .exec();
     if (expertService) {
@@ -46,6 +50,10 @@ router.get("/myServices/:id", validateObjectId, auth, async (req, res) => {
       .populate({
         path: "expert",
         model: "Expert",
+        populate: {
+          path: "provider",
+          model: "User",
+        },
       })
       .exec();
     if (expertService) {
@@ -74,6 +82,10 @@ router.get("/search/:query", auth, async (req, res) => {
     .populate({
       path: "expert",
       model: "Expert",
+      populate: {
+        path: "provider",
+        model: "User",
+      },
     })
     .exec();
   console.log(expertService);
@@ -110,6 +122,10 @@ router.get("/", auth, async (req, res) => {
       .populate({
         path: "expert",
         model: "Expert",
+        populate: {
+          path: "provider",
+          model: "User",
+        },
       })
       .exec();
     if (expertService) {
@@ -145,6 +161,10 @@ router.post("/", auth, async (req, res) => {
         .populate({
           path: "expert",
           model: "Expert",
+          populate: {
+            path: "provider",
+            model: "User",
+          },
         })
         .execPopulate();
       res.json({

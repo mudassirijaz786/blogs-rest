@@ -43,33 +43,29 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 router.post("/", upload.any(), async (req, res) => {
-  try {
-    req.body.imageUrl = req.files[0].url;
-    const expert = new Expert(
-      _.pick(req.body, [
-        "detail",
-        "address",
-        "name",
-        "provider",
-        "experties",
-        "imageUrl",
-      ])
-    );
-    await expert.save();
-    await expert
-      .populate({
-        path: "provider",
-        model: "User",
-        select: "-password",
-      })
-      .execPopulate();
-    res.json({
-      message: "Expert saved successfully",
-      data: expert,
-    });
-  } catch (error) {
-    res.status(400).json({ message: "Internal Server Error." });
-  }
+  req.body.imageUrl = req.files[0].url;
+  const expert = new Expert(
+    _.pick(req.body, [
+      "about",
+      "address",
+      "name",
+      "provider",
+      "phone",
+      "imageUrl",
+    ])
+  );
+  await expert.save();
+  await expert
+    .populate({
+      path: "provider",
+      model: "User",
+      select: "-password",
+    })
+    .execPopulate();
+  res.json({
+    message: "Expert saved successfully",
+    data: expert,
+  });
 });
 
 router.put("/:id", [validateObjectId], async (req, res) => {
