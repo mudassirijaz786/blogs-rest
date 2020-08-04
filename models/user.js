@@ -53,10 +53,30 @@ const userSchema = new mongoose.Schema({
     // required: true,
     default: false,
   },
+  experties: {
+    type: String,
+    required: true,
+    default: "Wheel Balancing",
+  },
   imageUrl: {
     type: String,
     // required: true,
     default: "",
+  },
+  heading: {
+    type: String,
+    // required: true,
+    default: "this is service provider headline",
+  },
+  rating: {
+    type: String,
+    required: true,
+    default: "5.0",
+  },
+  description: {
+    type: String,
+    // required: true,
+    default: "this is service provider description",
   },
 });
 

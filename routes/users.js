@@ -220,6 +220,8 @@ router.put("/deactivate/:id", [validateObjectId], async (req, res, next) => {
 
 router.put("/changeAvatar/:id", upload.any(), async (req, res) => {
   const user = await User.findById(req.params.id);
+  req.body.imageUrl = req.files[0].url;
+
   if (!user) {
     res.status(404).json({ statusCode: 404, message: "User not found" });
   } else {
@@ -227,7 +229,7 @@ router.put("/changeAvatar/:id", upload.any(), async (req, res) => {
       req.params.id,
       {
         $set: {
-          imageUrl: req.files[0].url,
+          imageUrl: req.body.imageUrl,
         },
       },
       { new: true }

@@ -14,6 +14,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
   totalServicesDone: {
     type: Number,
     required: true,
@@ -24,16 +28,7 @@ const schema = new mongoose.Schema({
     required: true,
     default: false,
   },
-  rating: {
-    type: String,
-    required: true,
-    default: "5.0",
-  },
-  experties: {
-    type: String,
-    required: true,
-  },
-  detail: {
+  about: {
     type: String,
     required: true,
   },
