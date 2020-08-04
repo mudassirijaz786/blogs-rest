@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 const config = require("config");
-var CryptoJS = require("crypto-js");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -11,13 +10,11 @@ const transporter = nodemailer.createTransport({
 });
 
 sendEmailForResetPassword = (to, text, _id) => {
-  var ciphertext = CryptoJS.AES.encrypt(_id, "SomeKey").toString();
-  console.log(ciphertext);
   const t =
     "<a href='" +
     config.get("frontEndURL") +
     "/resetPassword/?id=" +
-    ciphertext +
+    _id +
     "'>Reset Password</a>";
 
   const mailOptions = {
