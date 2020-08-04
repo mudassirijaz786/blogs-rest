@@ -29,6 +29,10 @@ const schema = new mongoose.Schema({
     required: true,
     default: "5.0",
   },
+  experties: {
+    type: String,
+    required: true,
+  },
   detail: {
     type: String,
     required: true,

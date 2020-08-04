@@ -91,17 +91,16 @@ router.post("/register", async (req, res) => {
 
 router.post("/newPassword/:id", validateObjectId, async (req, res) => {
   try {
-    const userId = await User.findById(req.params.id);
+    let userId = await User.findById(req.params.id);
     if (!userId) {
       res.status(404).json({
-        statusCode: 404,
-        message: "User not found in system",
+        message: `User not found in system`,
       });
     } else {
-      const salt = await bcrypt.genSalt(10);
+      const salt = await bcrypt.genSalt(12);
       const password = await bcrypt.hash(req.body.newPassword, salt);
       const user = await User.findByIdAndUpdate(
-        req.body._id,
+        req.params.id,
         {
           $set: {
             password,
@@ -110,16 +109,10 @@ router.post("/newPassword/:id", validateObjectId, async (req, res) => {
         { new: true }
       );
       const token = user.generateAuthToken();
-      user.password = "";
-      res.status(200).json({
-        statusCode: 200,
-        user,
-        message: "Password has been reset",
-        token,
-      });
+      res.status(200).json({ token, statusCode: 200, data: user });
     }
   } catch (error) {
-    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -136,8 +129,7 @@ router.post("/resetPassword/sendEmail", async (req, res) => {
       sendEmailForResetPassword(
         email,
         "Reset Your password",
-        "Follow the link to generate code ",
-        user._id
+        `The user id for password is ${user._id}`
       );
       res.status(200).json({
         statusCode: 200,
