@@ -89,7 +89,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/resetPassword/:id", validateObjectId, async (req, res) => {
+router.post("/newPassword/:id", validateObjectId, async (req, res) => {
   try {
     const userId = await User.findById(req.params.id);
     if (!userId) {
@@ -123,8 +123,7 @@ router.post("/resetPassword/:id", validateObjectId, async (req, res) => {
   }
 });
 
-router.put("/resetPassword/sendEmail", async (req, res) => {
-  console.log("inemail");
+router.post("/resetPassword/sendEmail", async (req, res) => {
   try {
     const email = req.body.email;
     const user = await User.findOne({ email });
@@ -140,11 +139,11 @@ router.put("/resetPassword/sendEmail", async (req, res) => {
         "Follow the link to generate code ",
         user._id
       );
+      res.status(200).json({
+        statusCode: 200,
+        message: "An email with the link has been forwarded to you",
+      });
     }
-    res.status(200).json({
-      statusCode: 200,
-      message: "An email with the link has been forwarded to you",
-    });
   } catch (error) {
     res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
