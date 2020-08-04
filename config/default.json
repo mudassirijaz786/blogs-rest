@@ -3,7 +3,7 @@
   "db": "mongodb://unnic:unnic123!@ds351987.mlab.com:51987/unnic",
   "port": "3900",
   "requiresAuth": false,
-  "frontEndURL": "www.google.com.pk",
+  "frontEndURL": "http://localhost:3000",
   "email": "tradebabapk@gmail.com",
   "emailPassword": "Pakistan888",
   "azure_api_key": "rFmmOilpQzDOaIDYoAXzFGWCqI6Qtm5GbU8pqZy/9nwnBuCPD5352CzAvRAvfbqlAp9Qi6iPGdAoZbPPHja4ag==",

@@ -118,25 +118,27 @@ router.post("/newPassword/:id", validateObjectId, async (req, res) => {
 
 router.post("/resetPassword/sendEmail", async (req, res) => {
   try {
+    // console.log(sendE);
     const email = req.body.email;
-    const user = await User.findOne({ email });
-    if (!user) {
-      res.status(404).json({
-        statusCode: 404,
-        message: `User with ${req.body.email} not found in system`,
-      });
-    } else {
-      sendEmailForResetPassword(
-        email,
-        "Reset Your password",
-        `The user id for password is ${user._id}`
-      );
-      res.status(200).json({
-        statusCode: 200,
-        message: "An email with the link has been forwarded to you",
-      });
-    }
+    // const user = await User.findOne({ email });
+    // if (!user) {
+    //   res.status(404).json({
+    //     statusCode: 404,
+    //     message: `User with ${req.body.email} not found in system`,
+    //   });
+    // } else {
+    sendEmailForResetPassword(
+      email,
+      "Account recovery",
+      "5f2289a9fa77f25875e13b95"
+    );
+    res.status(200).json({
+      statusCode: 200,
+      message: "An email with the link has been forwarded to you",
+    });
+    // }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
   }
 });
