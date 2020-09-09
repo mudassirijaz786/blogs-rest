@@ -1,8 +1,6 @@
-const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
 const _ = require("lodash");
 const { Service, validate } = require("../models/service");
-const { upload } = require("../utils/azureFileService");
 const express = require("express");
 const router = express.Router();
 
@@ -30,36 +28,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/search/:query", async (req, res) => {
-  const query = req.params.query.toLowerCase();
-  const services = await Service.find().populate("category").exec();
-  var foundServices = [];
-  services.forEach((service) => {
-    if (service.category.name.toLowerCase().includes(query)) {
-      foundServices.push(service);
-    }
-  });
-  foundServices.length > 0
-    ? res.json({ data: foundServices })
-    : res.status(400).json({
-        message: "Could not found any service regarding your search",
-      });
-});
-
-router.get("/byName/:name", async (req, res) => {
-  try {
-    const services = await Service.find({ name: req.params.name })
-      .populate("category")
-      .exec();
-    !services
-      ? res.status(400).json({ message: "No Service found!" })
-      : res.json({ data: services });
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error.." });
-  }
-});
-
-router.post("/", upload.any(), async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     req.body.imageUrl = req.files[0].url;
     const { error } = validate(req.body);
@@ -80,18 +49,7 @@ router.post("/", upload.any(), async (req, res) => {
   }
 });
 
-router.put("/updateImage/:id", upload.any(), async (req, res) => {
-  const service = await Service.findByIdAndUpdate(req.params.id, {
-    $set: { imageUrl: req.files[0].url },
-  });
-  service
-    ? res.json({ message: "Image updated successfully" })
-    : res
-        .status(404)
-        .json({ message: "Could not found any Service. Invalid id" });
-});
-
-router.put("/:id", [validateObjectId, admin], async (req, res) => {
+router.put("/:id", validateObjectId, async (req, res) => {
   try {
     let found = await Service.findById(req.params.id);
     if (!found) {
@@ -125,7 +83,7 @@ router.put("/:id", [validateObjectId, admin], async (req, res) => {
   }
 });
 
-router.delete("/:id", admin, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const service = await Service.findByIdAndRemove(req.params.id);
     !service

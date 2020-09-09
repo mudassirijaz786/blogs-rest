@@ -1,12 +1,11 @@
 const router = require("express").Router();
 const _ = require("lodash");
-const { upload } = require("../utils/azureFileService");
 const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 
 const { Category, validate } = require("../models/category");
 
-router.get("/:id", validateObjectId, auth, async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (category) {
@@ -32,7 +31,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.post("/", [upload.any(), auth], async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     req.body.imageUrl = req.files[0].url;
     const { error } = validate(req.body);
@@ -48,7 +47,7 @@ router.post("/", [upload.any(), auth], async (req, res) => {
   }
 });
 
-router.put("/updateImage/:id", upload.any(), async (req, res) => {
+router.put("/updateImage/:id", async (req, res) => {
   const service = await Category.findByIdAndUpdate(req.params.id, {
     $set: { imageUrl: req.files[0].url },
   });
@@ -59,7 +58,7 @@ router.put("/updateImage/:id", upload.any(), async (req, res) => {
         .json({ message: "Could not found any Category. Invalid id.." });
 });
 
-router.put("/:id", [validateObjectId, auth], async (req, res) => {
+router.put("/:id", validateObjectId, async (req, res) => {
   console.log(req.body);
   try {
     const category = await Category.findById(req.params.id);
@@ -77,7 +76,7 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
     res.status(400).json({ message: "Internal Server Error." });
   }
 });
-router.delete("/:id", [validateObjectId, auth], async (req, res) => {
+router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const category = await Category.findByIdAndRemove(req.params.id);
     if (category) {
