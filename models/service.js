@@ -15,7 +15,6 @@ const serviceSchema = new mongoose.Schema({
     ref: "Category",
     required: true,
   },
-
 });
 
 const Service = mongoose.model("Service", serviceSchema);

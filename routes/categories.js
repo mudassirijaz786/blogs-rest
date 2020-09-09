@@ -9,7 +9,7 @@ router.get("/:id", validateObjectId, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (category) {
-      res.json({ category });
+      res.json({ data: category });
     } else {
       res.status(404).json({ message: "Category not found." });
     }
@@ -18,7 +18,7 @@ router.get("/:id", validateObjectId, async (req, res) => {
   }
 });
 
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const data = await Category.find();
     if (data.length > 0) {
@@ -33,13 +33,11 @@ router.get("/", auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    req.body.imageUrl = req.files[0].url;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     else {
       const category = new Category(_.pick(req.body, ["name", "imageUrl"]));
       await category.save();
-      console.log(category);
       res.json({ message: "Category saved successfully" });
     }
   } catch (error) {
@@ -47,19 +45,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/updateImage/:id", async (req, res) => {
-  const service = await Category.findByIdAndUpdate(req.params.id, {
-    $set: { imageUrl: req.files[0].url },
-  });
-  service
-    ? res.json({ message: "Image updated successfully" })
-    : res
-        .status(404)
-        .json({ message: "Could not found any Category. Invalid id.." });
-});
-
 router.put("/:id", validateObjectId, async (req, res) => {
-  console.log(req.body);
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
@@ -76,13 +62,14 @@ router.put("/:id", validateObjectId, async (req, res) => {
     res.status(400).json({ message: "Internal Server Error." });
   }
 });
+
 router.delete("/:id", validateObjectId, async (req, res) => {
   try {
     const category = await Category.findByIdAndRemove(req.params.id);
     if (category) {
       res.json({ message: "category deleted successfully." });
     } else {
-      res.status(400).json({ message: "Invalid id. Category not found" });
+      res.status(400).json({ message: "Category not found" });
     }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });

@@ -1,19 +1,7 @@
 {
   "jwtPrivateKey": "myJWTKey",
-  "db": "mongodb://prac-node:Prac1!@ds153732.mlab.com:53732/prac-node",
+  "db": "mongodb://localhost:27017/newdb",
   "port": "3900",
   "requiresAuth": false,
-  "frontEndURL": "http://localhost:3000",
-  "email": "tradebabapk@gmail.com",
-  "emailPassword": "Pakistan888",
-  "azure_api_key": "rFmmOilpQzDOaIDYoAXzFGWCqI6Qtm5GbU8pqZy/9nwnBuCPD5352CzAvRAvfbqlAp9Qi6iPGdAoZbPPHja4ag==",
-  "azure_connection_string": "DefaultEndpointsProtocol=https;AccountName=tradebaba;AccountKey=rFmmOilpQzDOaIDYoAXzFGWCqI6Qtm5GbU8pqZy/9nwnBuCPD5352CzAvRAvfbqlAp9Qi6iPGdAoZbPPHja4ag==;EndpointSuffix=core.windows.net",
-  "stripe_key": "sk_test_9APzNBT0s0Ofr8YgCYyszvBz00INtCEYvh",
-  "aws": {
-    "accessKeyId": "AKIAJMIPBAVVXRVB4AWA",
-    "secretAccessKey": "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",
-    "REGION": "us-east-2",
-    "Bucket": "grokonez-s3-bucket"
-  },
   "socket": false
 }

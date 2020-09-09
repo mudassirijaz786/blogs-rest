@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const service = await Service.find().populate("category").exec();
+    const service = await Service.find();
     !service
       ? res.status(404).json({ message: "no service in database" })
-      : res.json({ data: service });
+      : res.send(service);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -30,11 +30,10 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    req.body.imageUrl = req.files[0].url;
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     let service = new Service(
-      _.pick(req.body, ["name", "description", "category", "imageUrl"])
+      _.pick(req.body, ["name", "description", "category"])
     );
 
     await service.save();
@@ -44,7 +43,6 @@ router.post("/", async (req, res) => {
       data: service,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal Server Error", error });
   }
 });
@@ -72,7 +70,6 @@ router.put("/:id", validateObjectId, async (req, res) => {
       )
         .populate("category")
         .exec();
-      console.log(service);
       res.json({
         message: "service has been updated successfully",
         data: service,
