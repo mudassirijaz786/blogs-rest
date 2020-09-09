@@ -18,6 +18,7 @@ router.get("/:id", validateObjectId, auth, async (req, res) => {
     res.status(400).json({ message: "Internal Server Error." });
   }
 });
+
 router.get("/", auth, async (req, res) => {
   try {
     const data = await Category.find();
@@ -65,9 +66,6 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
     if (!category) {
       res.status(404).json({ message: "Invalid id. Category not found" });
     } else {
-      // const { error } = validate(req.body);
-      // if (error) return res.status(400).send(error.details[0].message);
-      // else {
       await Category.findByIdAndUpdate(req.params.id, {
         $set: {
           name: req.body.name,
@@ -75,7 +73,6 @@ router.put("/:id", [validateObjectId, auth], async (req, res) => {
       });
       res.json({ message: "Saved successfully" });
     }
-    // }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
   }

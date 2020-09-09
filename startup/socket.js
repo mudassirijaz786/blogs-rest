@@ -1,4 +1,5 @@
 const config = require("config");
+
 module.exports = (app) => {
   if (config.get("socket")) {
     const http = require("http").createServer(app);

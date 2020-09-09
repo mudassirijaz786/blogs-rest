@@ -1,6 +1,5 @@
 const admin = require("../middleware/admin");
 const validateObjectId = require("../middleware/validateObjectId");
-// const image = require("../middleware/saveImage");
 const _ = require("lodash");
 const { Service, validate } = require("../models/service");
 const { upload } = require("../utils/azureFileService");
@@ -31,7 +30,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// >>>>
 router.get("/search/:query", async (req, res) => {
   const query = req.params.query.toLowerCase();
   const services = await Service.find().populate("category").exec();
