@@ -1,17 +1,16 @@
 const router = require("express").Router();
 const _ = require("lodash");
-const auth = require("../middleware/auth");
 const validateObjectId = require("../middleware/validateObjectId");
 
-const { Category, validate } = require("../models/category");
+const { Comment } = require("../models/comment");
 
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
-    if (category) {
-      res.json({ data: category });
+    const comment = await Comment.findById(req.params.id);
+    if (comment) {
+      res.json({ data: comment });
     } else {
-      res.status(404).json({ message: "Category not found." });
+      res.status(404).json({ message: "Comment not found." });
     }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
@@ -20,11 +19,11 @@ router.get("/:id", validateObjectId, async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const data = await Category.find();
+    const data = await Comment.find();
     if (data.length > 0) {
       res.json({ data });
     } else {
-      res.status(404).json({ message: "There is not any category in the DB" });
+      res.status(404).json({ message: "There is not any comment in the DB" });
     }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
@@ -33,13 +32,11 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-    else {
-      const category = new Category(_.pick(req.body, ["name", "imageUrl"]));
-      await category.save();
-      res.json({ message: "Category saved successfully" });
-    }
+    const comment = new Comment(
+      _.pick(req.body, ["name", "comment", "created_at"])
+    );
+    await comment.save();
+    res.json({ message: "Comment saved successfully" });
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error.", error });
   }
@@ -47,13 +44,15 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", validateObjectId, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
-    if (!category) {
-      res.status(404).json({ message: "Invalid id. Category not found" });
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      res.status(404).json({ message: "Comment not found" });
     } else {
-      await Category.findByIdAndUpdate(req.params.id, {
+      await Comment.findByIdAndUpdate(req.params.id, {
         $set: {
           name: req.body.name,
+          created_at: req.body.created_at,
+          comment: req.body.comment,
         },
       });
       res.json({ message: "Saved successfully" });
@@ -65,11 +64,11 @@ router.put("/:id", validateObjectId, async (req, res) => {
 
 router.delete("/:id", validateObjectId, async (req, res) => {
   try {
-    const category = await Category.findByIdAndRemove(req.params.id);
-    if (category) {
-      res.json({ message: "category deleted successfully." });
+    const comment = await Comment.findByIdAndRemove(req.params.id);
+    if (comment) {
+      res.json({ message: "comment deleted successfully." });
     } else {
-      res.status(400).json({ message: "Category not found" });
+      res.status(400).json({ message: "Comment not found" });
     }
   } catch (error) {
     res.status(400).json({ message: "Internal Server Error." });
