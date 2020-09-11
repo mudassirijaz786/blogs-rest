@@ -6,7 +6,7 @@ const { Blog } = require("../models/blog");
 
 router.get("/:id", validateObjectId, async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id).populate("comments");
     if (blog) {
       res.json({ data: blog });
     } else {
@@ -19,7 +19,7 @@ router.get("/:id", validateObjectId, async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const data = await Blog.find();
+    const data = await Blog.find().populate("comments");
     if (data.length > 0) {
       res.json({ data });
     } else {
